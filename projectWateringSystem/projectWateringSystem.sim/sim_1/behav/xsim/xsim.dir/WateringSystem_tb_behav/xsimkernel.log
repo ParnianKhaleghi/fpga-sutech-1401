@@ -1,0 +1,4 @@
+Running: xsim.dir/WateringSystem_tb_behav/xsimk.exe -simmode gui -wdb WateringSystem_tb_behav.wdb -simrunnum 0 -socket 9233
+Design successfully loaded
+Design Loading Memory Usage: 6860 KB (Peak: 6860 KB)
+Design Loading CPU Usage: 0 ms

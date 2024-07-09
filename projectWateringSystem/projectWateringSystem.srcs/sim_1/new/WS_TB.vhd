@@ -1,87 +1,94 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 07/09/2024 01:16:06 AM
--- Design Name: 
--- Module Name: WS_TB - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
-
 library IEEE;
-use IEEE.Std_logic_1164.all;
-use IEEE.Numeric_Std.all;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity WateringSystem_tb is
-end;
+-- Testbench does not have any ports
+end WateringSystem_tb;
 
-architecture bench of WateringSystem_tb is
+architecture behavior of WateringSystem_tb is
 
-  component WateringSystem
-      Port ( reset : in STD_LOGIC;
-             CLK : in STD_LOGIC;
-             M : in STD_LOGIC_VECTOR (2 downto 0);
-             L : in STD_LOGIC;
-             T : in STD_LOGIC;
-             STATE : out STD_LOGIC;
-             SEG : out STD_LOGIC_VECTOR (6 downto 0));
-  end component;
+    -- Component Declaration for the Unit Under Test (UUT)
+    component WateringSystem
+    Port(
+         reset : in STD_LOGIC;
+         CLK : in STD_LOGIC;
+         M : in STD_LOGIC_VECTOR (2 downto 0);
+         L : in STD_LOGIC;
+         T : in STD_LOGIC;
+         STATE : out STD_LOGIC;
+         SEG : out STD_LOGIC_VECTOR (6 downto 0)
+        );
+    end component;
 
-  signal reset: STD_LOGIC;
-  signal CLK: STD_LOGIC;
-  signal M: STD_LOGIC_VECTOR (2 downto 0);
-  signal L: STD_LOGIC;
-  signal T: STD_LOGIC;
-  signal STATE: STD_LOGIC;
-  signal SEG: STD_LOGIC_VECTOR (6 downto 0);
+    --Inputs
+    signal reset : STD_LOGIC := '0';
+    signal CLK : STD_LOGIC := '0';
+    signal M : STD_LOGIC_VECTOR (2 downto 0) := (others => '0');
+    signal L : STD_LOGIC := '0';
+    signal T : STD_LOGIC := '0';
 
-  constant clock_period: time := 10 ns;
-  signal stop_the_clock: boolean;
+    --Outputs
+    signal STATE : STD_LOGIC;
+    signal SEG : STD_LOGIC_VECTOR (6 downto 0);
+
+    -- Clock period definitions
+    constant CLK_period : time := 10 ns;
 
 begin
+    -- Instantiate the Unit Under Test (UUT)
+    uut: WateringSystem port map (
+          reset => reset,
+          CLK => CLK,
+          M => M,
+          L => L,
+          T => T,
+          STATE => STATE,
+          SEG => SEG
+        );
 
-  uut: WateringSystem port map ( reset => reset,
-                                 CLK   => CLK,
-                                 M     => M,
-                                 L     => L,
-                                 T     => T,
-                                 STATE => STATE,
-                                 SEG   => SEG );
+    -- Clock process definitions
+    CLK_process :process
+    begin
+        CLK <= '0';
+        wait for CLK_period/2;
+        CLK <= '1';
+        wait for CLK_period/2;
+    end process;
 
-  stimulus: process
-  begin
-  
-    -- Put initialisation code here
+    -- Stimulus process
+    stim_proc: process
+    begin
+        -- hold reset state for 100 ns.
+        reset <= '1';
+        wait for 100 ns;
 
-    reset <= '1';
-    wait for 5 ns;
-    reset <= '0';
-    wait for 5 ns;
+        reset <= '0';
 
-    -- Put test bench stimulus code here
+        -- Set inputs and wait for results
+        L <= '0';
+        T <= '0';
+        M <= "100";
+        wait for 50 ns;
 
-    stop_the_clock <= true;
-    wait;
-  end process;
+        M <= "011";
+        wait for 50 ns;
 
-  clocking: process
-  begin
-    while not stop_the_clock loop
-      CLK <= '0', '1' after clock_period / 2;
-      wait for clock_period;
-    end loop;
-    wait;
-  end process;
+        L <= '1';
+        T <= '1';
+        wait for 50 ns;
 
-end;
+        M <= "000";
+        wait for 50 ns;
+
+        L <= '0';
+        T <= '0';
+        M <= "111";
+        wait for 50 ns;
+
+        -- Add more test vectors as needed
+        wait;
+    end process;
+end behavior;
+

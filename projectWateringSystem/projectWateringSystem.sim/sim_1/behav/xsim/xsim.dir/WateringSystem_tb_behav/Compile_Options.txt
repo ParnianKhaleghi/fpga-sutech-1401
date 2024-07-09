@@ -1,0 +1,1 @@
+-wto "a75518e7b4234e349d92c1dc1c5d4fc4" --incr --debug "typical" --relax --mt "2" -L "xil_defaultlib" -L "secureip" --snapshot "WateringSystem_tb_behav" "xil_defaultlib.WateringSystem_tb" -log "elaborate.log" 
